@@ -21,6 +21,14 @@ public class Card {
         return suit;
     }
 
+    @Override
+    public String toString() {
+        return "Card{" +
+                "rank=" + rank +
+                ", suit=" + suit +
+                '}';
+    }
+
     public void setSuit(Suit suit) {
         this.suit = suit;
     }

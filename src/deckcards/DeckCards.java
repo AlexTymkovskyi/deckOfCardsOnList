@@ -1,38 +1,37 @@
 package deckcards;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class DeckCards {
-    List<Card> orderCardDeck;
-    List<Card> cardDeck;
+    Card[] orderCardDeck;
+    Card[] cardDeck;
 
     public DeckCards() {
-        cardDeck = deck();
         orderCardDeck = deck();
+        cardDeck = deck();
     }
 
-    public List deck() {
-        List<Card> cards = new ArrayList<>();
+    private Card[] deck() {
+        int counter = 0;
+        int deckCardSize = Rank.values.length * Suit.values.length;
+        Card[] cards = new Card[deckCardSize];
         for (Suit suit : Suit.values) {
             for (Rank rank : Rank.values) {
-                cards.add(new Card(rank, suit));
+                cards[counter] = new Card(rank, suit);
+                counter++;
             }
-        }
-        for (Card v : cards) {
-            System.out.println(v.getSuit().getName() + " " + v.getRank().getName());
-
         }
         return cards;
     }
 
     //Перемішує колоду у випадковому порядку
     public void shuffle() {
-        Collections.shuffle(cardDeck);
-        for (Card v : cardDeck) {
-            System.out.println(v.getSuit().getName() + " " + v.getRank().getName());
-
+        Random rnd = new Random();
+        for(int i = 0; i < cardDeck.length; i++) {
+            int index = rnd.nextInt(i + 1);
+            Card a = cardDeck[index];
+            cardDeck[index] = cardDeck[i];
+            cardDeck[i] = a;
         }
     }
 
@@ -52,33 +51,36 @@ public class DeckCards {
      * HEARTS 6
      * І так далі для DIAMONDS, CLUBS, SPADES */
     public void order() {
-
-        for (Card v : orderCardDeck) {
-            System.out.println(v.getSuit().getName() + " " + v.getRank().getName());
-
+        int counter = 0;
+        Card[] orderDeck = new Card[cardDeck.length];
+        for (Card a:orderCardDeck){
+            for (Card b:cardDeck){
+                if (a.getSuit().getName().equals(b.getSuit().getName())&a.getRank().getName().equals(b.getRank().getName())){
+                    orderDeck[counter] = new Card(a.getRank(),a.getSuit());
+                    counter++;
+                }
+            }
         }
+        cardDeck=orderCardDeck;
     }
 
     //Повертає true у випадку коли в колоді ще доступні карти
-    public boolean hasNext() {return cardDeck.get(1) != null;
+    public boolean hasNext() {
+        return cardDeck[1] != null;
     }
 
     //"Виймає" одну карту з колоди, коли буде видано всі 36 карт повертає null
     //Карти виймаються з "вершини" колоди. Наприклад перший виклик видасть SPADES 6 потім
     //SPADES 7, ..., CLUBS 6, ..., CLUBS Ace і так далі до HEARTS Ace
     public Card drawOne() {
-        Card drawOneCard;
-        if (orderCardDeck.size() == 0||orderCardDeck==null) {
+        if (cardDeck.length == 0) {
             return null;
         }
-        {int i = orderCardDeck.size()-1;
-            System.out.println(orderCardDeck.get(i).getSuit().getName()+" "+orderCardDeck.get(i).getRank().getName());
-            drawOneCard=orderCardDeck.remove(i);
+        {
+            Card drawOneCard=cardDeck[cardDeck.length-1];
+            cardDeck= Arrays.copyOf(cardDeck, cardDeck.length-1);
+            return drawOneCard;
         }
-            for (Card v : orderCardDeck) {
-            System.out.println(v.getSuit().getName() + " " + v.getRank().getName());
-        }
-        return drawOneCard;
     }
 
 }
